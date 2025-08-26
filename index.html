@@ -8,24 +8,555 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel Standalone for JSX/TSX transpilation in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
       body {
         font-family: 'Share Tech Mono', monospace;
         background-color: #1a1a1d;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/"
-  }
-}
-</script>
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="text/babel">
+      const { useState, useEffect, StrictMode } = React;
+      const { createRoot } = ReactDOM;
+
+      // Enums from types.ts
+      const Screen = {
+        CONNECTION: 'CONNECTION',
+        ENTER_ID: 'ENTER_ID',
+        ACCOUNT_VERIFICATION: 'ACCOUNT_VERIFICATION',
+        ESTABLISHING_LINK: 'ESTABLISHING_LINK',
+        GAME_SELECTION: 'GAME_SELECTION',
+        MAIN_INTERFACE: 'MAIN_INTERFACE',
+      };
+
+      const Signal = {
+        PLAYER: 'ИГРОК',
+        BANKER: 'БАНКИР',
+      };
+
+      // From components/common/AnimatedBackground.tsx
+      const AnimatedBackground = () => {
+        return (
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+            {Array.from({ length: 25 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute bg-purple-500/10"
+                style={{
+                  width: '1px',
+                  height: `${Math.random() * 60 + 20}%`,
+                  left: `${Math.random() * 100}%`,
+                  animation: `fall ${Math.random() * 10 + 10}s linear infinite`,
+                  animationDelay: `${Math.random() * -20}s`,
+                  top: '-70%',
+                }}
+              />
+            ))}
+            <style>{`
+              @keyframes fall {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(220vh); }
+              }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/common/GlowingButton.tsx
+      const GlowingButton = ({ onClick, children, className = '', disabled = false }) => {
+        return (
+          <button
+            onClick={onClick}
+            disabled={disabled}
+            className={`
+              bg-transparent border-2 border-[#9D00FF] text-[#9D00FF] font-bold py-4 px-8 
+              text-xl md:text-2xl tracking-widest uppercase transition-all duration-300 transform
+              shadow-[0_0_10px_#9D00FF,0_0_20px_#9D00FF,0_0_30px_#9D00FF]
+              hover:bg-[#9D00FF] hover:text-[#1a1a1d] 
+              hover:shadow-[0_0_20px_#9D00FF,0_0_40px_#9D00FF,0_0_60px_#9D00FF]
+              hover:scale-105
+              active:scale-95
+              disabled:border-gray-600 disabled:text-gray-600 disabled:shadow-none disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:scale-100
+              ${className}
+            `}
+          >
+            {children}
+          </button>
+        );
+      };
+
+      // From components/screens/SignalResultDisplay.tsx
+      const SignalResultDisplay = ({ signal }) => {
+        if (!signal) return null;
+
+        const isPlayer = signal === Signal.PLAYER;
+        const baseColor = isPlayer ? '#007bff' : '#dc3545';
+        const glowColor = isPlayer ? '#00aaff' : '#ff4757';
+        const borderColor = isPlayer ? 'border-blue-500' : 'border-red-500';
+        const animationName = isPlayer ? 'glow-pulse-blue' : 'glow-pulse-red';
+
+        return (
+          <div 
+              className={`w-full max-w-md bg-black/30 border-2 ${borderColor} p-6 relative overflow-hidden flex flex-col items-center justify-center text-center animate-reveal`}
+              style={{ '--base-color': baseColor, '--glow-color': glowColor, animationName: animationName, animationDuration: '3s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+          >
+            <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10" style={{ backgroundImage: `linear-gradient(${baseColor} 1px, transparent 1px), linear-gradient(to right, ${baseColor} 1px, transparent 1px)` }}></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-scanline animate-scanline" style={{ background: `linear-gradient(to bottom, ${baseColor}, transparent)` }}></div>
+
+            <h2 className="text-xl md:text-2xl text-gray-400 tracking-[0.2em] uppercase mb-4">Сигнал определён:</h2>
+            <p 
+              className="text-5xl md:text-7xl font-bold tracking-[0.2em] uppercase text-white" 
+              style={{ textShadow: `0 0 10px #fff, 0 0 20px ${baseColor}, 0 0 30px ${baseColor}` }}
+            >
+              {signal}
+            </p>
+
+            <style>{`
+              .bg-grid-pattern {
+                background-size: 20px 20px;
+              }
+              
+              @keyframes reveal {
+                from { opacity: 0; transform: scale(0.9); }
+                to { opacity: 1; transform: scale(1); }
+              }
+              .animate-reveal {
+                animation: reveal 0.7s ease-out forwards;
+              }
+
+              @keyframes scanline {
+                0% { transform: translateY(-100%); }
+                100% { transform: translateY(2000%); }
+              }
+              .animate-scanline {
+                  animation: scanline 4s linear infinite;
+                  animation-delay: 1s;
+              }
+
+              @keyframes glow-pulse-blue {
+                0%, 100% {
+                  box-shadow: 0 0 20px #007bff, 0 0 40px #007bff;
+                  border-color: #007bff;
+                }
+                50% {
+                  box-shadow: 0 0 30px #00aaff, 0 0 60px #00aaff;
+                  border-color: #00aaff;
+                }
+              }
+
+              @keyframes glow-pulse-red {
+                0%, 100% {
+                  box-shadow: 0 0 20px #dc3545, 0 0 40px #dc3545;
+                  border-color: #dc3545;
+                }
+                50% {
+                  box-shadow: 0 0 30px #ff4757, 0 0 60px #ff4757;
+                  border-color: #ff4757;
+                }
+              }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/Screen1Connection.tsx
+      const Screen1Connection = ({ onConnect }) => {
+        return (
+          <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-4 text-shadow-purple">
+              Подключение к серверам казино
+            </h1>
+            <p className="text-md md:text-lg text-gray-300 max-w-3xl mb-10 leading-relaxed text-shadow-purple-light">
+              Система HACKBACCARAT использует нейронную сеть для анализа зашифрованного потока данных с серверов Evolution. Проникая через уязвимости в протоколах, скрипт перехватывает пакеты данных за секунды до начала раздачи и с высокой точностью предсказывает исход.
+            </p>
+            <div className="w-48 h-48 md:w-64 md:h-64 border-2 border-[#9D00FF] p-4 mb-12 animate-pulse shadow-[0_0_20px_#9D00FF]">
+              <div className="w-full h-full border border-[#9D00FF]/50 flex items-center justify-center">
+                  <svg className="w-24 h-24 md:w-32 md:h-32 text-[#9D00FF] animate-spin-slow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+              </div>
+            </div>
+            <GlowingButton onClick={onConnect}>
+              Перейти на сайт казино
+            </GlowingButton>
+            <style>{`
+              .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+              @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
+              .text-shadow-purple-light { text-shadow: 0 0 3px #9D00FF; }
+              .animate-spin-slow { animation: spin 3s linear infinite; }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/ScreenEnterId.tsx
+      const ScreenEnterId = ({ onIdSubmit }) => {
+        const [id, setId] = useState('');
+
+        return (
+          <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-shadow-purple">
+              Введите ваш игровой ID 1WIN
+            </h1>
+            <input
+              type="text"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              placeholder="Ваш ID..."
+              className="bg-transparent border-2 border-[#9D00FF] text-white text-xl md:text-2xl text-center
+                        w-full max-w-sm p-4 mb-12 tracking-widest focus:outline-none focus:shadow-[0_0_20px_#9D00FF]
+                        transition-shadow duration-300"
+            />
+            <GlowingButton onClick={onIdSubmit} disabled={!id.trim()}>
+              Подтвердить
+            </GlowingButton>
+            <style>{`
+              .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+              @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
+              input::placeholder {
+                color: #9D00FF;
+                opacity: 0.5;
+              }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/ScreenAccountVerification.tsx
+      const ScreenAccountVerification = ({ onVerificationComplete }) => {
+        const [isVerified, setIsVerified] = useState(false);
+
+        useEffect(() => {
+          const verificationTimer = setTimeout(() => {
+            setIsVerified(true);
+          }, 4000); // 4 seconds for verification
+
+          return () => clearTimeout(verificationTimer);
+        }, []);
+
+        useEffect(() => {
+          if (isVerified) {
+            const transitionTimer = setTimeout(() => {
+              onVerificationComplete();
+            }, 1500); // 1.5 seconds to show the success message
+            return () => clearTimeout(transitionTimer);
+          }
+        }, [isVerified, onVerificationComplete]);
+
+        return (
+          <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
+            {isVerified ? (
+              <div className="flex flex-col items-center justify-center animate-fadeIn">
+                  <svg className="w-48 h-48 text-[#00FF7F]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M8.5 12.5L11 15L16 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark" />
+                  </svg>
+                <h1 className="mt-8 text-4xl md:text-5xl font-bold uppercase tracking-widest text-[#00FF7F] text-shadow-green">
+                  Аккаунт подтвержден
+                </h1>
+              </div>
+            ) : (
+              <>
+                <div className="relative w-48 h-48 mb-8 flex items-center justify-center">
+                  <svg className="w-full h-full text-[#9D00FF] animate-pulse" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeOpacity="0.5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M17 10C17 12.7614 14.7614 15 12 15C9.23858 15 7 12.7614 7 10C7 7.23858 9.23858 5 12 5C14.7614 5 17 7.23858 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M19.9998 20C19.9998 17.2386 16.4181 15 11.9998 15C7.5815 15 3.99976 17.2386 3.99976 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-full">
+                      <div className="absolute w-full h-2 bg-[#9D00FF]/50 shadow-[0_0_10px_#9D00FF] animate-scanner"></div>
+                  </div>
+                </div>
+                <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] text-shadow-purple">
+                  Проверка аккаунта...
+                </h1>
+              </>
+            )}
+            <style>{`
+              .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+              @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
+              .text-shadow-green { text-shadow: 0 0 10px #00FF7F, 0 0 20px #00FF7F; }
+
+              @keyframes scanner {
+                  0% { top: -10%; }
+                  50% { top: 100%; }
+                  100% { top: -10%; }
+              }
+              .animate-scanner {
+                  animation: scanner 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+              }
+
+              .animate-checkmark {
+                  stroke-dasharray: 50;
+                  stroke-dashoffset: 50;
+                  animation: draw 0.5s ease-out forwards;
+                  animation-delay: 0.2s;
+              }
+              @keyframes draw {
+                  to {
+                      stroke-dashoffset: 0;
+                  }
+              }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/Screen2EstablishingLink.tsx
+      const Screen2EstablishingLink = ({ onLinkEstablished }) => {
+        const HACKING_MESSAGES = [
+          '> Обход защиты Firewall...',
+          '> Поиск уязвимостей в протоколе...',
+          '> Расшифровка потока данных Evolution Gaming...',
+          '> Инъекция скрипта HACKBACCARAT...',
+          '> Получение доступа...',
+          '> ...'
+        ];
+        const TOTAL_DURATION = 30000; // 30 seconds
+        const MESSAGE_INTERVAL = 5000; // 5 seconds
+
+        const [progress, setProgress] = useState(0);
+        const [messageIndex, setMessageIndex] = useState(0);
+        const [isComplete, setIsComplete] = useState(false);
+
+        useEffect(() => {
+          const messageTimer = setInterval(() => {
+            setMessageIndex(prevIndex => (prevIndex + 1));
+          }, MESSAGE_INTERVAL);
+
+          const startTime = Date.now();
+          const progressTimer = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            const newProgress = Math.min(100, (elapsedTime / TOTAL_DURATION) * 100);
+            setProgress(newProgress);
+
+            if (newProgress >= 100) {
+              clearInterval(progressTimer);
+              clearInterval(messageTimer);
+              setIsComplete(true);
+              setTimeout(onLinkEstablished, 2000); 
+            }
+          }, 100);
+
+          return () => {
+            clearInterval(messageTimer);
+            clearInterval(progressTimer);
+          };
+        }, []);
+
+        if (isComplete) {
+          return (
+            <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
+              <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest text-[#00FF7F] text-shadow-green">
+                Связь установлена!
+              </h1>
+              <style>{`
+                .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+                @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+                .text-shadow-green { text-shadow: 0 0 10px #00FF7F, 0 0 20px #00FF7F; }
+              `}</style>
+            </div>
+          );
+        }
+
+        return (
+          <div className="w-full flex flex-col items-center justify-center animate-fadeIn">
+            <div className="w-full max-w-2xl p-4 border-2 border-[#9D00FF]/50 min-h-[100px] flex items-center">
+              <p className="text-lg md:text-xl h-8 text-[#9D00FF] animate-typing">{HACKING_MESSAGES[messageIndex]}</p>
+            </div>
+            <div className="w-full max-w-2xl mt-8">
+              <div className="w-full bg-[#1a1a1d] border-2 border-[#9D00FF] h-8 p-1">
+                <div
+                  className="bg-[#9D00FF] h-full transition-all duration-100 ease-linear shadow-[0_0_10px_#9D00FF]"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="text-right text-xl md:text-2xl mt-2 text-[#9D00FF]">{Math.round(progress)}%</p>
+            </div>
+            <style>{`
+              .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+              @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+              .animate-typing::after {
+                content: '_';
+                animation: blink 1s step-end infinite;
+              }
+              @keyframes blink {
+                50% { opacity: 0; }
+              }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/Screen3GameSelection.tsx
+      const Screen3GameSelection = ({ onGameSelect }) => {
+        return (
+          <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-shadow-purple">
+              Выберите игру
+            </h1>
+            <GlowingButton onClick={onGameSelect}>
+              First Person Baccarat Evolution
+            </GlowingButton>
+            <style>{`
+              .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+              @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
+            `}</style>
+          </div>
+        );
+      };
+
+      // From components/screens/Screen4MainInterface.tsx
+      const Screen4MainInterface = () => {
+          const [status, setStatus] = useState('IDLE');
+          const [signal, setSignal] = useState(null);
+          const [countdown, setCountdown] = useState(30);
+
+          const NeuralNetworkAnimation = () => (
+              <div className="relative w-64 h-48 my-8 flex items-center justify-center flex-col">
+                  <div className="absolute w-full h-full border border-purple-500/30 rounded-lg animate-pulse"></div>
+                  <div className="absolute w-3/4 h-3/4 border border-purple-500/50 rounded-lg animate-pulse" style={{ animationDelay: '200ms' }}></div>
+                  <div className="absolute w-1/2 h-1/2 border border-purple-500/70 rounded-lg animate-pulse" style={{ animationDelay: '400ms' }}></div>
+                  <p className="text-xl md:text-2xl text-[#9D00FF] z-10 animate-pulse tracking-widest">ИДЕТ АНАЛИЗ...</p>
+              </div>
+          );
+
+          useEffect(() => {
+              if (status === 'RESULT' && countdown > 0) {
+                  const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+                  return () => clearTimeout(timer);
+              }
+          }, [status, countdown]);
+
+          const handleGetSignal = () => {
+              setStatus('ANALYZING');
+              setTimeout(() => {
+                  const newSignal = Math.random() > 0.5 ? Signal.PLAYER : Signal.BANKER;
+                  setSignal(newSignal);
+                  setStatus('RESULT');
+                  setCountdown(30); // Reset countdown on new signal
+              }, 4500); // 4.5 second animation
+          };
+          
+          const handleReset = () => {
+              setStatus('IDLE');
+              setSignal(null);
+          };
+
+          const renderContent = () => {
+              switch (status) {
+                  case 'ANALYZING':
+                      return <NeuralNetworkAnimation />;
+                  case 'RESULT':
+                      return (
+                          <div className="w-full flex flex-col items-center">
+                              <div className="mb-8 w-full flex justify-center">
+                                  <SignalResultDisplay signal={signal} />
+                              </div>
+                              {countdown > 0 ? (
+                                  <GlowingButton onClick={() => {}} disabled={true}>
+                                      Новый сигнал через: {countdown}с
+                                  </GlowingButton>
+                              ) : (
+                                  <GlowingButton onClick={handleReset}>
+                                      Получить новый сигнал
+                                  </GlowingButton>
+                              )}
+                          </div>
+                      );
+                  case 'IDLE':
+                  default:
+                      return (
+                          <GlowingButton onClick={handleGetSignal}>
+                              Получить сигнал
+                          </GlowingButton>
+                      );
+              }
+          };
+
+          return (
+              <div className="w-full flex flex-col items-center justify-center text-center animate-fadeIn min-h-[400px]">
+                  <header className="w-full max-w-3xl mb-12">
+                      <div className="flex justify-between items-center border-2 border-[#9D00FF]/50 p-4">
+                          <h1 className="text-2xl md:text-4xl font-bold tracking-widest text-shadow-purple">HACKBACCARAT</h1>
+                          <div className="flex items-center space-x-2">
+                              <span className="relative flex h-3 w-3">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF7F] opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00FF7F]"></span>
+                              </span>
+                              <p className="text-lg md:text-xl text-[#00FF7F] uppercase tracking-wider">Статус: Подключено</p>
+                          </div>
+                      </div>
+                  </header>
+                  <div className="flex-grow flex items-center justify-center">
+                      {renderContent()}
+                  </div>
+                  <style>{`
+                      .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
+                      @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+                      .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
+                  `}</style>
+              </div>
+          );
+      };
+
+      // From App.tsx
+      const App = () => {
+        const [currentScreen, setCurrentScreen] = useState(Screen.CONNECTION);
+
+        const renderScreen = () => {
+          switch (currentScreen) {
+            case Screen.CONNECTION:
+              return <Screen1Connection onConnect={() => setCurrentScreen(Screen.ENTER_ID)} />;
+            case Screen.ENTER_ID:
+              return <ScreenEnterId onIdSubmit={() => setCurrentScreen(Screen.ACCOUNT_VERIFICATION)} />;
+            case Screen.ACCOUNT_VERIFICATION:
+              return <ScreenAccountVerification onVerificationComplete={() => setCurrentScreen(Screen.ESTABLISHING_LINK)} />;
+            case Screen.ESTABLISHING_LINK:
+              return <Screen2EstablishingLink onLinkEstablished={() => setCurrentScreen(Screen.GAME_SELECTION)} />;
+            case Screen.GAME_SELECTION:
+              return <Screen3GameSelection onGameSelect={() => setCurrentScreen(Screen.MAIN_INTERFACE)} />;
+            case Screen.MAIN_INTERFACE:
+              return <Screen4MainInterface />;
+            default:
+              return <Screen1Connection onConnect={() => setCurrentScreen(Screen.ENTER_ID)} />;
+          }
+        };
+
+        return (
+          <main className="bg-[#1a1a1d] text-white min-h-screen w-full flex flex-col items-center justify-center font-mono relative overflow-hidden p-4">
+            <AnimatedBackground />
+            <div className="z-10 w-full max-w-5xl">
+              {renderScreen()}
+            </div>
+          </main>
+        );
+      };
+
+      // From index.tsx
+      const rootElement = document.getElementById('root');
+      if (!rootElement) {
+        throw new Error("Could not find root element to mount to");
+      }
+
+      const root = createRoot(rootElement);
+      root.render(
+        <StrictMode>
+          <App />
+        </StrictMode>
+      );
+    </script>
   </body>
 </html>
