@@ -18,6 +18,22 @@
         font-family: 'Share Tech Mono', monospace;
         background-color: #1a1a1d;
       }
+      .text-glow-purple {
+        color: #9D00FF;
+        text-shadow: 0 0 2px rgba(255,255,255,0.3), 0 0 8px #9D00FF, 0 0 12px #9D00FF;
+      }
+      .text-glow-green {
+        color: #00FF7F;
+        text-shadow: 0 0 2px rgba(255,255,255,0.3), 0 0 8px #00FF7F, 0 0 12px #00FF7F;
+      }
+      .p-subtle-glow {
+          text-shadow: 0 0 4px rgba(157, 0, 255, 0.4);
+      }
+      .input-placeholder::placeholder {
+        color: #9D00FF;
+        opacity: 0.5;
+        text-shadow: none;
+      }
     </style>
 </head>
   <body>
@@ -110,7 +126,7 @@
             <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10" style={{ backgroundImage: `linear-gradient(${baseColor} 1px, transparent 1px), linear-gradient(to right, ${baseColor} 1px, transparent 1px)` }}></div>
             <div className="absolute top-0 left-0 w-full h-2 bg-scanline animate-scanline" style={{ background: `linear-gradient(to bottom, ${baseColor}, transparent)` }}></div>
 
-            <h2 className="text-xl md:text-2xl text-gray-400 tracking-[0.2em] uppercase mb-4">SINAL IDENTIFICADO:</h2>
+            <h2 className="text-xl md:text-2xl text-gray-300 tracking-[0.2em] uppercase mb-4 p-subtle-glow">SINAL IDENTIFICADO:</h2>
             <p 
               className="text-5xl md:text-7xl font-bold tracking-[0.2em] uppercase text-white" 
               style={{ textShadow: `0 0 10px #fff, 0 0 20px ${baseColor}, 0 0 30px ${baseColor}` }}
@@ -170,10 +186,10 @@
       const Screen1Connection = ({ onConnect }) => {
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-4 text-shadow-purple">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-4 text-glow-purple">
               CONECTANDO AOS SERVIDORES DO CASSINO
             </h1>
-            <p className="text-md md:text-lg text-gray-300 max-w-3xl mb-10 leading-relaxed text-shadow-purple-light">
+            <p className="text-md md:text-lg text-gray-300 max-w-3xl mb-10 leading-relaxed p-subtle-glow">
               O sistema HACKBACCARAT usa uma rede neural para analisar o fluxo de dados criptografado dos servidores da Evolution. Infiltrando-se através de vulnerabilidades de protocolo, o script intercepta pacotes de dados segundos antes do início da rodada e prevê o resultado com alta precisão.
             </p>
             <div className="w-48 h-48 md:w-64 md:h-64 border-2 border-[#9D00FF] p-4 mb-12 animate-pulse shadow-[0_0_20px_#9D00FF]">
@@ -190,8 +206,6 @@
             <style>{`
               .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
               @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
-              .text-shadow-purple-light { text-shadow: 0 0 3px #9D00FF; }
               .animate-spin-slow { animation: spin 3s linear infinite; }
             `}</style>
           </div>
@@ -204,7 +218,7 @@
 
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-shadow-purple">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-glow-purple">
               DIGITE SEU ID DE JOGO 1WIN
             </h1>
             <input
@@ -214,7 +228,7 @@
               placeholder="Seu ID..."
               className="bg-transparent border-2 border-[#9D00FF] text-white text-xl md:text-2xl text-center
                         w-full max-w-sm p-4 mb-12 tracking-widest focus:outline-none focus:shadow-[0_0_20px_#9D00FF]
-                        transition-shadow duration-300"
+                        transition-shadow duration-300 input-placeholder"
             />
             <GlowingButton onClick={onIdSubmit} disabled={!id.trim()}>
               CONFIRMAR
@@ -222,11 +236,6 @@
             <style>{`
               .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
               @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
-              input::placeholder {
-                color: #9D00FF;
-                opacity: 0.5;
-              }
             `}</style>
           </div>
         );
@@ -261,7 +270,7 @@
                       <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M8.5 12.5L11 15L16 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark" />
                   </svg>
-                <h1 className="mt-8 text-4xl md:text-5xl font-bold uppercase tracking-widest text-[#00FF7F] text-shadow-green">
+                <h1 className="mt-8 text-4xl md:text-5xl font-bold uppercase tracking-widest text-glow-green">
                   CONTA VERIFICADA
                 </h1>
               </div>
@@ -277,7 +286,7 @@
                       <div className="absolute w-full h-2 bg-[#9D00FF]/50 shadow-[0_0_10px_#9D00FF] animate-scanner"></div>
                   </div>
                 </div>
-                <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] text-shadow-purple">
+                <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] text-glow-purple">
                   VERIFICANDO CONTA...
                 </h1>
               </>
@@ -285,9 +294,7 @@
             <style>{`
               .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
               @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
-              .text-shadow-green { text-shadow: 0 0 10px #00FF7F, 0 0 20px #00FF7F; }
-
+              
               @keyframes scanner {
                   0% { top: -10%; }
                   50% { top: 100%; }
@@ -353,18 +360,17 @@
             clearInterval(messageTimer);
             clearInterval(progressTimer);
           };
-        }, []);
+        }, [onLinkEstablished]);
 
         if (isComplete) {
           return (
             <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-              <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest text-[#00FF7F] text-shadow-green">
+              <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest text-glow-green">
                 CONEXÃO ESTABELECIDA!
               </h1>
               <style>{`
                 .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
                 @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-                .text-shadow-green { text-shadow: 0 0 10px #00FF7F, 0 0 20px #00FF7F; }
               `}</style>
             </div>
           );
@@ -373,7 +379,7 @@
         return (
           <div className="w-full flex flex-col items-center justify-center animate-fadeIn">
             <div className="w-full max-w-2xl p-4 border-2 border-[#9D00FF]/50 min-h-[100px] flex items-center">
-              <p className="text-lg md:text-xl h-8 text-[#9D00FF] animate-typing">{HACKING_MESSAGES[messageIndex]}</p>
+              <p className="text-lg md:text-xl h-8 text-[#00FF7F] animate-typing">{HACKING_MESSAGES[messageIndex]}</p>
             </div>
             <div className="w-full max-w-2xl mt-8">
               <div className="w-full bg-[#1a1a1d] border-2 border-[#9D00FF] h-8 p-1">
@@ -403,7 +409,7 @@
       const Screen3GameSelection = ({ onGameSelect }) => {
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-shadow-purple">
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-glow-purple">
               ESCOLHA O JOGO
             </h1>
             <GlowingButton onClick={onGameSelect}>
@@ -412,7 +418,6 @@
             <style>{`
               .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
               @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-              .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
             `}</style>
           </div>
         );
@@ -429,7 +434,7 @@
                   <div className="absolute w-full h-full border border-purple-500/30 rounded-lg animate-pulse"></div>
                   <div className="absolute w-3/4 h-3/4 border border-purple-500/50 rounded-lg animate-pulse" style={{ animationDelay: '200ms' }}></div>
                   <div className="absolute w-1/2 h-1/2 border border-purple-500/70 rounded-lg animate-pulse" style={{ animationDelay: '400ms' }}></div>
-                  <p className="text-xl md:text-2xl text-[#9D00FF] z-10 animate-pulse tracking-widest">ANALISANDO...</p>
+                  <p className="text-xl md:text-2xl text-[#9D00FF] z-10 animate-pulse tracking-widest text-glow-purple">ANALISANDO...</p>
               </div>
           );
 
@@ -490,13 +495,13 @@
               <div className="w-full flex flex-col items-center justify-center text-center animate-fadeIn min-h-[400px]">
                   <header className="w-full max-w-3xl mb-12">
                       <div className="flex justify-between items-center border-2 border-[#9D00FF]/50 p-4">
-                          <h1 className="text-2xl md:text-4xl font-bold tracking-widest text-shadow-purple">HACKBACCARAT</h1>
+                          <h1 className="text-2xl md:text-4xl font-bold tracking-widest text-glow-purple">HACKBACCARAT</h1>
                           <div className="flex items-center space-x-2">
                               <span className="relative flex h-3 w-3">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF7F] opacity-75"></span>
                                   <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00FF7F]"></span>
                               </span>
-                              <p className="text-lg md:text-xl text-[#00FF7F] uppercase tracking-wider">STATUS: CONECTADO</p>
+                              <p className="text-lg md:text-xl uppercase tracking-wider text-glow-green">STATUS: CONECTADO</p>
                           </div>
                       </div>
                   </header>
@@ -506,7 +511,6 @@
                   <style>{`
                       .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
                       @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-                      .text-shadow-purple { text-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF; }
                   `}</style>
               </div>
           );
