@@ -92,8 +92,8 @@
             onClick={onClick}
             disabled={disabled}
             className={`
-              bg-transparent border-2 border-[#9D00FF] text-[#9D00FF] font-bold py-4 px-8 
-              text-xl md:text-2xl tracking-widest uppercase transition-all duration-300 transform
+              bg-transparent border-2 border-[#9D00FF] text-[#9D00FF] font-bold py-2 px-6 
+              text-base md:text-lg tracking-widest uppercase transition-all duration-300 transform
               shadow-[0_0_10px_#9D00FF,0_0_20px_#9D00FF,0_0_30px_#9D00FF]
               hover:bg-[#9D00FF] hover:text-[#1a1a1d] 
               hover:shadow-[0_0_20px_#9D00FF,0_0_40px_#9D00FF,0_0_60px_#9D00FF]
@@ -126,9 +126,9 @@
             <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-10" style={{ backgroundImage: `linear-gradient(${baseColor} 1px, transparent 1px), linear-gradient(to right, ${baseColor} 1px, transparent 1px)` }}></div>
             <div className="absolute top-0 left-0 w-full h-2 bg-scanline animate-scanline" style={{ background: `linear-gradient(to bottom, ${baseColor}, transparent)` }}></div>
 
-            <h2 className="text-xl md:text-2xl text-gray-300 tracking-[0.2em] uppercase mb-4 p-subtle-glow">SINAL IDENTIFICADO:</h2>
+            <h2 className="text-lg md:text-xl text-gray-300 tracking-[0.2em] uppercase mb-4 p-subtle-glow">SINAL IDENTIFICADO:</h2>
             <p 
-              className="text-5xl md:text-7xl font-bold tracking-[0.2em] uppercase text-white" 
+              className="text-4xl md:text-5xl font-bold tracking-[0.2em] uppercase text-white" 
               style={{ textShadow: `0 0 10px #fff, 0 0 20px ${baseColor}, 0 0 30px ${baseColor}` }}
             >
               {signal}
@@ -186,15 +186,15 @@
       const Screen1Connection = ({ onConnect }) => {
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-4 text-glow-purple">
+            <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.2em] mb-4 text-glow-purple">
               CONECTANDO AOS SERVIDORES DO CASSINO
             </h1>
-            <p className="text-md md:text-lg text-gray-300 max-w-3xl mb-10 leading-relaxed p-subtle-glow">
+            <p className="text-sm md:text-base text-gray-300 max-w-2xl mb-6 leading-relaxed p-subtle-glow">
               O sistema HACKBACCARAT usa uma rede neural para analisar o fluxo de dados criptografado dos servidores da Evolution. Infiltrando-se através de vulnerabilidades de protocolo, o script intercepta pacotes de dados segundos antes do início da rodada e prevê o resultado com alta precisão.
             </p>
-            <div className="w-48 h-48 md:w-64 md:h-64 border-2 border-[#9D00FF] p-4 mb-12 animate-pulse shadow-[0_0_20px_#9D00FF]">
+            <div className="w-32 h-32 md:w-40 md:h-40 border-2 border-[#9D00FF] p-3 mb-8 animate-pulse shadow-[0_0_20px_#9D00FF]">
               <div className="w-full h-full border border-[#9D00FF]/50 flex items-center justify-center">
-                  <svg className="w-24 h-24 md:w-32 md:h-32 text-[#9D00FF] animate-spin-slow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="w-16 h-16 md:w-20 md:h-20 text-[#9D00FF] animate-spin-slow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -218,7 +218,7 @@
 
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-glow-purple">
+            <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.2em] mb-8 text-glow-purple">
               DIGITE SEU ID DE JOGO 1WIN
             </h1>
             <input
@@ -226,11 +226,11 @@
               value={id}
               onChange={(e) => setId(e.target.value)}
               placeholder="Seu ID..."
-              className="bg-transparent border-2 border-[#9D00FF] text-white text-xl md:text-2xl text-center
-                        w-full max-w-sm p-4 mb-12 tracking-widest focus:outline-none focus:shadow-[0_0_20px_#9D00FF]
+              className="bg-transparent border-2 border-[#9D00FF] text-white text-lg md:text-xl text-center
+                        w-full max-w-sm p-3 mb-8 tracking-widest focus:outline-none focus:shadow-[0_0_20px_#9D00FF]
                         transition-shadow duration-300 input-placeholder"
             />
-            <GlowingButton onClick={onIdSubmit} disabled={!id.trim()}>
+            <GlowingButton onClick={() => onIdSubmit(id)} disabled={!id.trim()}>
               CONFIRMAR
             </GlowingButton>
             <style>{`
@@ -266,17 +266,17 @@
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
             {isVerified ? (
               <div className="flex flex-col items-center justify-center animate-fadeIn">
-                  <svg className="w-48 h-48 text-[#00FF7F]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="w-32 h-32 text-[#00FF7F]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M8.5 12.5L11 15L16 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark" />
                   </svg>
-                <h1 className="mt-8 text-4xl md:text-5xl font-bold uppercase tracking-widest text-glow-green">
+                <h1 className="mt-6 text-2xl md:text-4xl font-bold uppercase tracking-widest text-glow-green">
                   CONTA VERIFICADA
                 </h1>
               </div>
             ) : (
               <>
-                <div className="relative w-48 h-48 mb-8 flex items-center justify-center">
+                <div className="relative w-32 h-32 mb-6 flex items-center justify-center">
                   <svg className="w-full h-full text-[#9D00FF] animate-pulse" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeOpacity="0.5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M17 10C17 12.7614 14.7614 15 12 15C9.23858 15 7 12.7614 7 10C7 7.23858 9.23858 5 12 5C14.7614 5 17 7.23858 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -286,7 +286,7 @@
                       <div className="absolute w-full h-2 bg-[#9D00FF]/50 shadow-[0_0_10px_#9D00FF] animate-scanner"></div>
                   </div>
                 </div>
-                <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] text-glow-purple">
+                <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.2em] text-glow-purple">
                   VERIFICANDO CONTA...
                 </h1>
               </>
@@ -365,7 +365,7 @@
         if (isComplete) {
           return (
             <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-              <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-widest text-glow-green">
+              <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-widest text-glow-green">
                 CONEXÃO ESTABELECIDA!
               </h1>
               <style>{`
@@ -378,17 +378,17 @@
 
         return (
           <div className="w-full flex flex-col items-center justify-center animate-fadeIn">
-            <div className="w-full max-w-2xl p-4 border-2 border-[#9D00FF]/50 min-h-[100px] flex items-center">
-              <p className="text-lg md:text-xl h-8 text-[#00FF7F] animate-typing">{HACKING_MESSAGES[messageIndex]}</p>
+            <div className="w-full max-w-2xl p-4 border-2 border-[#9D00FF]/50 min-h-[80px] flex items-center">
+              <p className="text-base md:text-lg h-8 text-[#00FF7F] animate-typing">{HACKING_MESSAGES[messageIndex]}</p>
             </div>
-            <div className="w-full max-w-2xl mt-8">
+            <div className="w-full max-w-2xl mt-6">
               <div className="w-full bg-[#1a1a1d] border-2 border-[#9D00FF] h-8 p-1">
                 <div
                   className="bg-[#9D00FF] h-full transition-all duration-100 ease-linear shadow-[0_0_10px_#9D00FF]"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-right text-xl md:text-2xl mt-2 text-[#9D00FF]">{Math.round(progress)}%</p>
+              <p className="text-right text-lg md:text-xl mt-1 text-[#9D00FF]">{Math.round(progress)}%</p>
             </div>
             <style>{`
               .animate-fadeIn { animation: fadeIn 1s ease-in-out; }
@@ -409,7 +409,7 @@
       const Screen3GameSelection = ({ onGameSelect }) => {
         return (
           <div className="flex flex-col items-center justify-center text-center animate-fadeIn">
-            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-[0.2em] mb-12 text-glow-purple">
+            <h1 className="text-2xl md:text-4xl font-bold uppercase tracking-[0.2em] mb-8 text-glow-purple">
               ESCOLHA O JOGO
             </h1>
             <GlowingButton onClick={onGameSelect}>
@@ -430,11 +430,11 @@
           const [countdown, setCountdown] = useState(30);
 
           const NeuralNetworkAnimation = () => (
-              <div className="relative w-64 h-48 my-8 flex items-center justify-center flex-col">
+              <div className="relative w-48 h-36 my-6 flex items-center justify-center flex-col">
                   <div className="absolute w-full h-full border border-purple-500/30 rounded-lg animate-pulse"></div>
                   <div className="absolute w-3/4 h-3/4 border border-purple-500/50 rounded-lg animate-pulse" style={{ animationDelay: '200ms' }}></div>
                   <div className="absolute w-1/2 h-1/2 border border-purple-500/70 rounded-lg animate-pulse" style={{ animationDelay: '400ms' }}></div>
-                  <p className="text-xl md:text-2xl text-[#9D00FF] z-10 animate-pulse tracking-widest text-glow-purple">ANALISANDO...</p>
+                  <p className="text-lg md:text-xl text-[#9D00FF] z-10 animate-pulse tracking-widest text-glow-purple">ANALISANDO...</p>
               </div>
           );
 
@@ -467,7 +467,7 @@
                   case 'RESULT':
                       return (
                           <div className="w-full flex flex-col items-center">
-                              <div className="mb-8 w-full flex justify-center">
+                              <div className="mb-6 w-full flex justify-center">
                                   <SignalResultDisplay signal={signal} />
                               </div>
                               {countdown > 0 ? (
@@ -492,16 +492,16 @@
           };
 
           return (
-              <div className="w-full flex flex-col items-center justify-center text-center animate-fadeIn min-h-[400px]">
-                  <header className="w-full max-w-3xl mb-12">
-                      <div className="flex justify-between items-center border-2 border-[#9D00FF]/50 p-4">
-                          <h1 className="text-2xl md:text-4xl font-bold tracking-widest text-glow-purple">HACKBACCARAT</h1>
+              <div className="w-full flex flex-col items-center justify-center text-center animate-fadeIn min-h-[300px]">
+                  <header className="w-full max-w-3xl mb-8">
+                      <div className="flex justify-between items-center border-2 border-[#9D00FF]/50 p-3">
+                          <h1 className="text-xl md:text-3xl font-bold tracking-widest text-glow-purple">HACKBACCARAT</h1>
                           <div className="flex items-center space-x-2">
                               <span className="relative flex h-3 w-3">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF7F] opacity-75"></span>
                                   <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00FF7F]"></span>
                               </span>
-                              <p className="text-lg md:text-xl uppercase tracking-wider text-glow-green">STATUS: CONECTADO</p>
+                              <p className="text-base md:text-lg uppercase tracking-wider text-glow-green">STATUS: CONECTADO</p>
                           </div>
                       </div>
                   </header>
@@ -542,7 +542,7 @@
         return (
           <main className="bg-[#1a1a1d] text-white min-h-screen w-full flex flex-col items-center justify-center font-mono relative overflow-hidden p-4">
             <AnimatedBackground />
-            <div className="z-10 w-full max-w-5xl">
+            <div className="z-10 w-full max-w-4xl">
               {renderScreen()}
             </div>
           </main>
